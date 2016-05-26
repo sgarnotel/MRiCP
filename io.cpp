@@ -1861,17 +1861,42 @@ bool LoadTransfertFunction(const QString DirName, QVector<int> *Selection){
     return Res;
 }
 
-bool SaveCSV(QString FileName, QVector<double> *X, QVector<double> *Y){
+bool SaveCSV(QString FileName, QStringList Names, QVector<double> *X, QVector<double> *Y, QVector<double> *SD){
     unsigned int NX = X->count();
     unsigned int NY = Y->count();
 
     if ((NX == NY) && (NX != 0)){
         QFile File(FileName);
         if (File.open(QIODevice::WriteOnly)){
+            unsigned int NN = Names.size();
+            for (unsigned int i = 0; i < NN; i++){
+                File.write("\"");
+                File.write(Names.at(i).toStdString().c_str());
+                File.write("\"");
+                if (i != NN-1) File.write("\t");
+            }
+            File.write("\n");
             for (unsigned int i = 0; i < NX; i++){
-                File.write(QString::number(X->at(i)).toStdString().c_str());
+                QString Xstr = QString::number(X->at(i));
+                Xstr = Xstr.replace(".", ",");
+                QString Ystr = QString::number(Y->at(i));
+                Ystr = Ystr.replace(".", ",");
+
+                File.write(Xstr.toStdString().c_str());
                 File.write("\t");
-                File.write(QString::number(Y->at(i)).toStdString().c_str());
+                File.write(Ystr.toStdString().c_str());
+
+                if (SD != NULL){
+                    unsigned int NSD = SD->size();
+                    if (NSD == NX){
+                        QString SDstr = QString::number(SD->at(i));
+                        SDstr = SDstr.replace(".", ",");
+
+                        File.write("\t");
+                        File.write(SDstr.toStdString().c_str());
+                    }
+                }
+
                 if (i != (NX-1)) File.write("\n");
             }
             return true;
