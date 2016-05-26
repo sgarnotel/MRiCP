@@ -176,17 +176,26 @@ void MainWindow::init_win(){
     action_file_quit->setIcon(QIcon("img/quit.png"));
 
     action_module_PATIENT->setText("Patient");
+    action_module_PATIENT->setCheckable(true);
     action_module_MRI->setText("MRI");
+    action_module_MRI->setCheckable(true);
     action_module_ICP->setText("ICP");
+    action_module_ICP->setCheckable(true);
     action_module_EPI->setText("EPI");
+    action_module_EPI->setCheckable(true);
     action_module_EPI->setDisabled(true);
     action_module_COMPLIANCE->setText("Compliance");
+    action_module_COMPLIANCE->setCheckable(true);
     action_module_TRANSFERTFUNCTION->setText("Transfert Function");
+    action_module_TRANSFERTFUNCTION->setCheckable(true);
     action_module_STATISTICS->setText("Statistics");
+    action_module_STATISTICS->setCheckable(true);
+    action_module_STATISTICS->setEnabled(false);
 
     action_action_import_Flow_eXplorer->setText("Import from Flow eXplorer");
     action_action_export_data->setText("Export data");
     action_action_export_report->setText("Export report");
+    action_action_export_report->setEnabled(false);
 
     action_edit_settings->setText("Settings");
     action_edit_settings->setIcon(QIcon("img/settings.png"));
@@ -460,6 +469,13 @@ void MainWindow::module_PATIENT(){
 #endif
 
     stacked_widget->setCurrentIndex(0);
+
+    action_module_MRI->setChecked(false);
+    action_module_ICP->setChecked(false);
+    action_module_EPI->setChecked(false);
+    action_module_COMPLIANCE->setChecked(false);
+    action_module_TRANSFERTFUNCTION->setChecked(false);
+    action_module_STATISTICS->setChecked(false);
 }
 
 void MainWindow::module_MRI(){
@@ -468,6 +484,13 @@ void MainWindow::module_MRI(){
 #endif
 
     stacked_widget->setCurrentIndex(1);
+
+    action_module_PATIENT->setChecked(false);
+    action_module_ICP->setChecked(false);
+    action_module_EPI->setChecked(false);
+    action_module_COMPLIANCE->setChecked(false);
+    action_module_TRANSFERTFUNCTION->setChecked(false);
+    action_module_STATISTICS->setChecked(false);
 }
 
 void MainWindow::module_ICP(){
@@ -476,6 +499,13 @@ void MainWindow::module_ICP(){
 #endif
 
     stacked_widget->setCurrentIndex(2);
+
+    action_module_PATIENT->setChecked(false);
+    action_module_MRI->setChecked(false);
+    action_module_EPI->setChecked(false);
+    action_module_COMPLIANCE->setChecked(false);
+    action_module_TRANSFERTFUNCTION->setChecked(false);
+    action_module_STATISTICS->setChecked(false);
 }
 
 void MainWindow::module_EPI(){
@@ -484,6 +514,13 @@ void MainWindow::module_EPI(){
 #endif
 
     stacked_widget->setCurrentIndex(3);
+
+    action_module_PATIENT->setChecked(false);
+    action_module_MRI->setChecked(false);
+    action_module_ICP->setChecked(false);
+    action_module_COMPLIANCE->setChecked(false);
+    action_module_TRANSFERTFUNCTION->setChecked(false);
+    action_module_STATISTICS->setChecked(false);
 }
 
 void MainWindow::module_COMPLIANCE(){
@@ -492,6 +529,13 @@ void MainWindow::module_COMPLIANCE(){
 #endif
 
     stacked_widget->setCurrentIndex(4);
+
+    action_module_PATIENT->setChecked(false);
+    action_module_MRI->setChecked(false);
+    action_module_ICP->setChecked(false);
+    action_module_EPI->setChecked(false);
+    action_module_TRANSFERTFUNCTION->setChecked(false);
+    action_module_STATISTICS->setChecked(false);
 }
 
 void MainWindow::module_TRANSFERTFUNCTION(){
@@ -500,6 +544,13 @@ void MainWindow::module_TRANSFERTFUNCTION(){
 #endif
 
     stacked_widget->setCurrentIndex(5);
+
+    action_module_PATIENT->setChecked(false);
+    action_module_MRI->setChecked(false);
+    action_module_ICP->setChecked(false);
+    action_module_EPI->setChecked(false);
+    action_module_COMPLIANCE->setChecked(false);
+    action_module_STATISTICS->setChecked(false);
 }
 
 void MainWindow::module_STATISTICS(){
@@ -508,6 +559,13 @@ void MainWindow::module_STATISTICS(){
 #endif
 
     stacked_widget->setCurrentIndex(6);
+
+    action_module_PATIENT->setChecked(false);
+    action_module_MRI->setChecked(false);
+    action_module_ICP->setChecked(false);
+    action_module_EPI->setChecked(false);
+    action_module_COMPLIANCE->setChecked(false);
+    action_module_TRANSFERTFUNCTION->setChecked(false);
 }
 
 bool MainWindow::action_import_Flow_eXplorer(){
@@ -539,9 +597,91 @@ bool MainWindow::action_export_data(){
         else{
             unsigned int NData = DataList->count();
             for (unsigned int i = 0; i < NData; i++){
-                std::cout << DataList->at(i).toStdString() << std::endl;
-                //TODO savecsv
+                QString Item = DataList->at(i);
+
+                bool Res;
+                QStringList Names;
+                Names.append("Time(s)");
+                Names.append("Flow (mm³/s)");
+                QStringList Names2;
+                Names2.append("Time (s)");
+                Names2.append("Pressure (mmHg)");
+                Names2.append("SD (mmHg)");
+                if (Item.compare("Arterial spinal") == 0){
+                    Res = SaveCSV(*DirName + "/arterial_spinal.csv", Names, MRI__vector_arterial_spinal_x, MRI__vector_arterial_spinal_y);
+                    if (!Res){
+                        statusbar_show_warning("Export data error - ERR3");
+                    }
+                }
+                else if (Item.compare("Arterial intracranial") == 0){
+                    Res = SaveCSV(*DirName + "/arterial_intracranial.csv", Names, MRI__vector_arterial_intracranial_x, MRI__vector_arterial_intracranial_y);
+                    if (!Res){
+                        statusbar_show_warning("Export data error - ERR4");
+                    }
+                }
+                else if (Item.compare("Venous spinal") == 0){
+                    Res = SaveCSV(*DirName + "/venous_spinal.csv", Names, MRI__vector_venous_spinal_x, MRI__vector_venous_spinal_y);
+                    if (!Res){
+                        statusbar_show_warning("Export data error - ERR5");
+                    }
+                }
+                else if (Item.compare("Venous corrected spinal") == 0){
+                    Res = SaveCSV(*DirName + "/venous_corrected_spinal.csv", Names, MRI__vector_venous_spinal_x, MRI__vector_venous_corrected_spinal_y);
+                    if (!Res){
+                        statusbar_show_warning("Export data error - ERR6");
+                    }
+                }
+                else if (Item.compare("Venous intracranial") == 0){
+                    Res = SaveCSV(*DirName + "/venous_intracranial.csv", Names, MRI__vector_venous_intracranial_x, MRI__vector_venous_intracranial_y);
+                    if (!Res){
+                        statusbar_show_warning("Export data error - ERR7");
+                    }
+                }
+                else if (Item.compare("Venous corrected intracranial") == 0){
+                    Res = SaveCSV(*DirName + "/venous_corrected_intracranial.csv", Names, MRI__vector_venous_intracranial_x, MRI__vector_venous_corrected_intracranial_y);
+                    if (!Res){
+                        statusbar_show_warning("Export data error - ERR8");
+                    }
+                }
+                else if (Item.compare("CSF spinal") == 0){
+                    Res = SaveCSV(*DirName + "/csf_spinal.csv", Names, MRI__vector_csf_spinal_x, MRI__vector_csf_spinal_y);
+                    if (!Res){
+                        statusbar_show_warning("Export data error - ERR9");
+                    }
+                }
+                else if (Item.compare("CSF corrected spinal") == 0){
+                    Res = SaveCSV(*DirName + "/csf_corrected_spinal.csv", Names, MRI__vector_csf_spinal_x, MRI__vector_csf_corrected_spinal_y);
+                    if (!Res){
+                        statusbar_show_warning("Export data error - ERR10");
+                    }
+                }
+                else if (Item.compare("CSF intracranial") == 0){
+                    Res = SaveCSV(*DirName + "/csf_intracranial.csv", Names, MRI__vector_csf_intracranial_x, MRI__vector_csf_intracranial_y);
+                    if (!Res){
+                        statusbar_show_warning("Export data error - ERR11");
+                    }
+                }
+                else if (Item.compare("CSF corrected intracranial") == 0){
+                    Res = SaveCSV(*DirName + "/csf_corrected_intracranial.csv", Names, MRI__vector_csf_intracranial_x, MRI__vector_csf_corrected_intracranial_y);
+                    if (!Res){
+                        statusbar_show_warning("Export data error - ERR12");
+                    }
+                }
+                else if (Item.compare("ICP basal") == 0){
+                    Res = SaveCSV(*DirName + "/icp_basal.csv", Names2, ICP__vector_mean_basal_x, ICP__vector_mean_basal_y, ICP__vector_mean_sd_basal_y);
+                    if (!Res){
+                        statusbar_show_warning("Export data error - ERR13");
+                    }
+                }
+                else if (Item.compare("ICP plateau") == 0){
+                    Res = SaveCSV(*DirName + "/icp_plateau.csv", Names2, ICP__vector_mean_plateau_x, ICP__vector_mean_plateau_y, ICP__vector_mean_sd_plateau_y);
+                    if (!Res){
+                        statusbar_show_warning("Export data error - ERR14");
+                    }
+                }
             }
+
+            statusbar_show_message("Export data done");
             return true;
         }
     }
@@ -556,7 +696,8 @@ bool MainWindow::action_export_report(){
     std::cout << Q_FUNC_INFO << std::endl;
 #endif
 
-    //TODO
+    DialogExportReport *Dialog = new DialogExportReport(this);
+    Dialog->exec();
 
     return true;
 }
@@ -623,7 +764,17 @@ void MainWindow::aboutMRiCP(){
     std::cout << Q_FUNC_INFO << std::endl;
 #endif
 
-    QString Text = "";  //TODO
+    QString Text = "<h2>About MRiCP</h2><br/>"
+                   "MRiCP provide an open source solution to analyse PC-MRI flow curves and IntraCranial Pressure (ICP) curves<br/>"
+                   "This software is licensed under GNU GPL version 3<br/><br/>"
+                   "Thank to :"
+                   "<ul>"
+                   "<li>Emanuel Eichhammer for the QCustomPlot widget<br/><a href=\"http://www.qcustomplot.com/\">http://www.qcustomplot.com/</a><li/>"
+                   "<li>Everaldo Coelho for the Crystal Clear icon set<br/><a href=\"https://commons.wikimedia.org/wiki/Crystal_Clear\">https://commons.wikimedia.org/wiki/Crystal_Clear</a></li>"
+                   "</ul>"
+                   "Author: Simon Garnotel<br/>"
+                   "Year: 2016<br/>"
+                   "Version: 1.0<br/>";
     QMessageBox::about(this, "About MRiCP", Text);
 }
 
