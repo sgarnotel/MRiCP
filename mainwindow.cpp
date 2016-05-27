@@ -190,7 +190,7 @@ void MainWindow::init_win(){
     action_module_TRANSFERTFUNCTION->setCheckable(true);
     action_module_STATISTICS->setText("Statistics");
     action_module_STATISTICS->setCheckable(true);
-    action_module_STATISTICS->setEnabled(false);
+    action_module_STATISTICS->setEnabled(false);  //TODO devel
 
     action_action_import_Flow_eXplorer->setText("Import from Flow eXplorer");
     action_action_export_data->setText("Export data");
@@ -470,6 +470,7 @@ void MainWindow::module_PATIENT(){
 
     stacked_widget->setCurrentIndex(0);
 
+    action_module_PATIENT->setChecked(true);
     action_module_MRI->setChecked(false);
     action_module_ICP->setChecked(false);
     action_module_EPI->setChecked(false);
@@ -486,6 +487,7 @@ void MainWindow::module_MRI(){
     stacked_widget->setCurrentIndex(1);
 
     action_module_PATIENT->setChecked(false);
+    action_module_MRI->setChecked(true);
     action_module_ICP->setChecked(false);
     action_module_EPI->setChecked(false);
     action_module_COMPLIANCE->setChecked(false);
@@ -502,6 +504,7 @@ void MainWindow::module_ICP(){
 
     action_module_PATIENT->setChecked(false);
     action_module_MRI->setChecked(false);
+    action_module_ICP->setChecked(true);
     action_module_EPI->setChecked(false);
     action_module_COMPLIANCE->setChecked(false);
     action_module_TRANSFERTFUNCTION->setChecked(false);
@@ -518,6 +521,7 @@ void MainWindow::module_EPI(){
     action_module_PATIENT->setChecked(false);
     action_module_MRI->setChecked(false);
     action_module_ICP->setChecked(false);
+    action_module_EPI->setChecked(true);
     action_module_COMPLIANCE->setChecked(false);
     action_module_TRANSFERTFUNCTION->setChecked(false);
     action_module_STATISTICS->setChecked(false);
@@ -534,6 +538,7 @@ void MainWindow::module_COMPLIANCE(){
     action_module_MRI->setChecked(false);
     action_module_ICP->setChecked(false);
     action_module_EPI->setChecked(false);
+    action_module_COMPLIANCE->setChecked(true);
     action_module_TRANSFERTFUNCTION->setChecked(false);
     action_module_STATISTICS->setChecked(false);
 }
@@ -550,6 +555,7 @@ void MainWindow::module_TRANSFERTFUNCTION(){
     action_module_ICP->setChecked(false);
     action_module_EPI->setChecked(false);
     action_module_COMPLIANCE->setChecked(false);
+    action_module_TRANSFERTFUNCTION->setChecked(true);
     action_module_STATISTICS->setChecked(false);
 }
 
@@ -566,6 +572,7 @@ void MainWindow::module_STATISTICS(){
     action_module_EPI->setChecked(false);
     action_module_COMPLIANCE->setChecked(false);
     action_module_TRANSFERTFUNCTION->setChecked(false);
+    action_module_STATISTICS->setChecked(true);
 }
 
 bool MainWindow::action_import_Flow_eXplorer(){
