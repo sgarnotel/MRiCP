@@ -170,50 +170,62 @@ bool MainWindow::STATISTICS__do_load(){
 
     QString Dir = QFileDialog::getExistingDirectory(this, "Select the Results directory", GetResultsDir(&Res));
 
-    QDir CurrentDir = QDir(Dir);
-    QStringList FileList = CurrentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    if (!Dir.isEmpty()){
+        QDir CurrentDir = QDir(Dir);
+        QStringList FileList = CurrentDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
 
-    for (int i = 0; i < FileList.count(); i++){
-        STATISTICS__list_load->addItem(FileList.at(i));
-        //TODO load data
-        QVector<double> Results;
-        Res = LoadICPResults(Dir + "/" + FileList.at(i) + "/ICP", &Results);
-        if (Res){
-            for (unsigned int j = 0; j < 12; j++){
-                STATISTICS__vector_data[j]->append(Results.at(j));
+        for (int i = 0; i < FileList.count(); i++){
+            STATISTICS__list_load->addItem(FileList.at(i));
+            //TODO load data
+            QVector<double> Results;
+            Res = LoadICPResults(Dir + "/" + FileList.at(i) + "/ICP", &Results);
+            if (Res){
+                for (unsigned int j = 0; j < 12; j++){
+                    STATISTICS__vector_data[j]->append(Results.at(j));
+                }
+            }
+            else{
+                for (unsigned int j = 0; j < 12; j++){
+                    STATISTICS__vector_data[j]->append(0.);
+                }
+            }
+            Res = LoadComplianceResults(Dir + "/" + FileList.at(i) + "/COMPLIANCE", &Results);
+            if (Res){
+                for (unsigned int j = 0; j < 8; j++){
+                    STATISTICS__vector_data[j+12]->append(Results.at(j));
+                }
+            }
+            else{
+                for (unsigned int j = 0; j < 8; j++){
+                    STATISTICS__vector_data[j+12]->append(0.);
+                }
             }
         }
-        Res = LoadComplianceResults(Dir + "/" + FileList.at(i) + "/COMPLIANCE", &Results);
-        if (Res){
-            for (unsigned int j = 0; j < 8; j++){
-                STATISTICS__vector_data[j+12]->append(Results.at(j));
-            }
-        }
+
+        QStringList Items;
+        Items.append("ICP basal -- Cardical cycle");
+        Items.append("ICP basal -- Heart rate");
+        Items.append("ICP basal -- Min");
+        Items.append("ICP basal -- Max");
+        Items.append("ICP basal -- Mean");
+        Items.append("ICP basal -- Amplitude");
+        Items.append("ICP plateau -- Cardical cycle");
+        Items.append("ICP plateau -- Heart rate");
+        Items.append("ICP plateau -- Min");
+        Items.append("ICP plateau -- Max");
+        Items.append("ICP plateau -- Mean");
+        Items.append("ICP plateau -- Amplitude");
+        Items.append("COMPLIANCE -- AV spinal / ICP basal");
+        Items.append("COMPLIANCE -- AV spinal / ICP plateau");
+        Items.append("COMPLIANCE -- AVCSF spinal / ICP basal");
+        Items.append("COMPLIANCE -- AVCSF spinal / ICP plateau");
+        Items.append("COMPLIANCE -- AV intracranial / ICP basal");
+        Items.append("COMPLIANCE -- AV intracranial / ICP plateau");
+        Items.append("COMPLIANCE -- AVCSF intracranial / ICP basal");
+        Items.append("COMPLIANCE -- AVCSF intracranial / ICP plateau");
+
+        STATISTICS__do_combobox(Items);
     }
-
-    QStringList Items;
-    Items.append("ICP basal -- Cardical cycle");
-    Items.append("ICP basal -- Heart rate");
-    Items.append("ICP basal -- Min");
-    Items.append("ICP basal -- Max");
-    Items.append("ICP basal -- Mean");
-    Items.append("ICP basal -- Amplitude");
-    Items.append("ICP plateau -- Cardical cycle");
-    Items.append("ICP plateau -- Heart rate");
-    Items.append("ICP plateau -- Min");
-    Items.append("ICP plateau -- Max");
-    Items.append("ICP plateau -- Mean");
-    Items.append("ICP plateau -- Amplitude");
-    Items.append("COMPLIANCE -- AV spinal / ICP basal");
-    Items.append("COMPLIANCE -- AV spinal / ICP plateau");
-    Items.append("COMPLIANCE -- AVCSF spinal / ICP basal");
-    Items.append("COMPLIANCE -- AVCSF spinal / ICP plateau");
-    Items.append("COMPLIANCE -- AV intracranial / ICP basal");
-    Items.append("COMPLIANCE -- AV intracranial / ICP plateau");
-    Items.append("COMPLIANCE -- AVCSF intracranial / ICP basal");
-    Items.append("COMPLIANCE -- AVCSF intracranial / ICP plateau");
-
-    STATISTICS__do_combobox(Items);
 
     return Res;
 }
@@ -262,9 +274,17 @@ bool MainWindow::STATISTICS__do_remove(){
 
     bool Res;
 
-    STATISTICS__list_load->clear();
+    unsigned int NList = STATISTICS__list_load->count();
 
-    //TODO clear data
+    for (unsigned int i = 0; i < NList; i++){
+        if (STATISTICS__list_load->item(i)->isSelected()){
+            for (int j = 0; j < NDATA; j++){
+                STATISTICS__vector_data[j]->remove(i);
+            }
+        }
+    }
+
+    qDeleteAll(STATISTICS__list_load->selectedItems());
 
     Res = true;
     return Res;
